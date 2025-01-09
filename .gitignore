@@ -1,0 +1,12 @@
+_main*
+.vscode
+gg
+mini*
+*.o
+a.out
+libmlx.a
+libmlx.dylib
+map.py
+stuff.tldr
+so_long
+ft_printf/libftprintf.a
