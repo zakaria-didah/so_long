@@ -1,6 +1,6 @@
 NAME=libftprintf.a
 CC=cc 
-CFLAGS=-Wall -Wextra -Werror
+CFLAGS=-Wall -Wextra -Werror -fPIE
 SRC=ft_printf.c ft_printf_utiles.c
 OBJ=$(SRC:.c=.o)
 
@@ -8,6 +8,9 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	ar rcs $(NAME) $(OBJ)
+
+.o: .c
+	cc $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJ)

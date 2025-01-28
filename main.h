@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zdidah <zdidah@student.1337.ma>            +#+  +:+       +#+        */
+/*   By: zdidah <zdidah@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/28 12:44:12 by zdidah            #+#    #+#             */
-/*   Updated: 2025/01/09 17:05:03 by zdidah           ###   ########.fr       */
+/*   Updated: 2025/01/24 18:19:38 by zdidah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,6 @@ typedef struct s_data
 	int		endian;
 }			t_data;
 
-typedef struct s_vars
-{
-	void	*mlx;
-	void	*win;
-	t_data	img;
-}			t_vars;
-
 typedef struct s_map
 {
 	int		c;
@@ -51,7 +44,29 @@ typedef struct s_map
 	int x;
 	int y;
 	char **map;
+	void *right_corner;
+	void *right_down_corner;
+	void *left_corner;
+	void *left_down_corner;
+	void *top_wall;
+	void *bottom_wall;
+	void *right_wall;
+	void *left_wall;
+	void *coin;
+	void *exit;
+	void *player;
+	void *enemy;
+	
 }			t_map;
+
+typedef struct s_vars
+{
+	void	*mlx;
+	void	*win;
+	t_data	*img;
+	t_map	*map;
+}			t_vars;
+
 char	**ft_arrjoin(char **s1, char *s2);
 int	flood_fill(char **lines, t_map *map , int x , int y);
 void		ft_error(char *s);
@@ -78,5 +93,6 @@ int			valid_map(char **lines, int len);
 int			print_play(t_vars *vars);
 char		*ft_strjoin(char *s1, char *s2);
 //int	valid_obj(char **lines,t_map *map, int len);
+void start_the_game(t_vars *vars);
 
 #endif

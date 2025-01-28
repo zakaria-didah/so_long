@@ -253,6 +253,8 @@ int	main(int ac, char *av[])
 	if (!validate(&map , ac, av))
 		return (0);
 	
+
+	
 	vars.mlx = mlx_init();
 	vars.win = mlx_new_window(vars.mlx, map.x, map.y, "toby!");
 	img.img = mlx_new_image(vars.mlx, map.x, map.y);
@@ -262,12 +264,11 @@ int	main(int ac, char *av[])
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
 			&img.endian);
 	offset = (map.y * img.line_length + map.x * (img.bits_per_pixel / 8));
-	//my_mlx_pixel_put(image, 5, 5, 0x0000FF00);
-	// mlx_xpm_file_to_image(vars.mlx, "textures/play.xpm", &x, &y);
-	//mlx_put_image_to_window(vars.mlx, vars.win, image, map.x , map.y);
-	void *pac = mlx_png_file_to_image(vars.mlx, "textures/pac man/pac man & life counter & death/pac man/pac_man_0.png", &ii , &ij);
-	mlx_put_image_to_window(vars.mlx, vars.win, pac, 400, 400);
-	mlx_string_put(vars.mlx, vars.win, , , 0x00FFFFFF, "Hello World!");
+	my_mlx_pixel_put(&img, 5, 5, 0x0000FF00);
+	mlx_put_image_to_window(vars.mlx, vars.win, image, map.x , map.y);
+	//void *pac = mlx_png_file_to_image(vars.mlx, "textures/pac man/pac man & life counter & death/pac man/pac_man_0.png", &ii , &ij);
+	//mlx_put_image_to_window(vars.mlx, vars.win, pac, 400, 400);
+	//mlx_string_put(vars.mlx, vars.win, 100, 100, 0x00FFFFFF, "Hello World!");
 	//print_play(&vars);
 	// while (j < 800)
 	//     mlx_pixel_put(vars.mlx, vars.win, j++ , i , 0x00FF0000);
