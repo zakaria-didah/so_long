@@ -6,7 +6,7 @@
 /*   By: zdidah <zdidah@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 17:53:37 by zdidah            #+#    #+#             */
-/*   Updated: 2024/12/12 18:15:25 by zdidah           ###   ########.fr       */
+/*   Updated: 2025/02/07 14:31:16 by zdidah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*ft_substr_(const char *s, unsigned int start, size_t len)
 		return (ft_strjoin_(NULL, ""));
 	if (len > ft_strlen_(s + start))
 		len = ft_strlen_(s + start);
-	new = malloc((len + 1) * sizeof(char));
+	new = ft_calloc((len + 1), sizeof(char));
 	if (!new)
 		return (NULL);
 	i = 0;
@@ -55,7 +55,7 @@ char	*ft_strjoin_(char *s1, char *s2)
 	j = 0;
 	if (!s1 && !s2)
 		return (NULL);
-	str = malloc(sizeof(char) * (ft_strlen_(s1) + ft_strlen_(s2) + 1));
+	str = ft_calloc(sizeof(char), (ft_strlen_(s1) + ft_strlen_(s2) + 1));
 	if (!str)
 		return (NULL);
 	while (s1 && s1[i])
@@ -65,7 +65,7 @@ char	*ft_strjoin_(char *s1, char *s2)
 	}
 	while (s2 && s2[j])
 		str[i++] = s2[j++];
-	return (str[i] = 0, str);
+	return (ft_remove(s1), str[i] = 0, str);
 }
 
 char	*ft_strchr_(const char *s, int c)

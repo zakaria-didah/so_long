@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zdidah <zdidah@student.1337.ma>            +#+  +:+       +#+        */
+/*   By: zdidah <zdidah@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 11:08:54 by zdidah            #+#    #+#             */
-/*   Updated: 2025/01/05 16:26:15 by zdidah           ###   ########.fr       */
+/*   Updated: 2025/02/07 11:22:55 by zdidah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #  define BUFFER_SIZE 100
 # endif
 
+# include "libft/garb.h"
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>

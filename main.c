@@ -5,7 +5,8 @@
 int	_close(t_vars *vars)
 {
 	mlx_destroy_window(vars->mlx, vars->win);
-	mlx_destroy_image(vars->mlx, vars->img.img);
+	//mlx_destroy_image(vars->mlx, vars->img.img);
+
 	exit(0);
 	return (0);
 }
@@ -22,15 +23,20 @@ int	keycode(int keycode, t_vars *vars)
 {
 	if (keycode == 53)
 		_close(vars);
+	if (keycode == 36)
+	{
+		mlx_clear_window(vars->mlx, vars->win);
+		start_the_game(vars);
+	}
 	return (0);
 }
-
+// TO SEE IF THERE IS A WAY OUT FOR THE PLAYER TO ALL THE COINS AND THE EXIT DOOR 
 int	flood_fill(char **lines, t_map *map , int x , int y)
 {
 	int i = 0;
 	if (!lines[x] || !lines[x][y])
 		return i;
-	if (lines[x][y] == '*' || lines[x][y] == '1' )
+	if (lines[x][y] == '*' || lines[x][y] == '1')
 		return i;
 	if(lines[x][y] == '0')
 		map->empty++;
@@ -45,44 +51,7 @@ int	flood_fill(char **lines, t_map *map , int x , int y)
 	return i;
 }
 
-int	print_play(t_vars *vars)
-{
-	int	i;
-	int	j;
-
-	i = 280;
-	j = 300;
-	while (i < 400)
-	{
-		mlx_pixel_put(vars->mlx, vars->win, j, i, 0x00FFFFFF);
-		mlx_pixel_put(vars->mlx, vars->win, j + 1, i++, 0x00FFFFFF);
-	}
-	i = 280;
-	while (j < 350)
-	{
-		while (j < 350)
-		{
-			mlx_pixel_put(vars->mlx, vars->win, j, i, 0x00FFFFFF);
-			mlx_pixel_put(vars->mlx, vars->win, j++, i + 1, 0x00FFFFFF);
-		}
-		i = 330;
-		j = 300;
-		while (j < 352)
-		{
-			mlx_pixel_put(vars->mlx, vars->win, j, i, 0x00FFFFFF);
-			mlx_pixel_put(vars->mlx, vars->win, j++, i + 1, 0x00FFFFFF);
-		}
-	}
-	i = 280;
-	j = 350;
-	while (i < 330)
-	{
-		mlx_pixel_put(vars->mlx, vars->win, j, i, 0x00FFFFFF);
-		mlx_pixel_put(vars->mlx, vars->win, j + 1, i++, 0x00FFFFFF);
-	}
-	return (0);
-}
-
+// TO VALIDATE THE MAP IF THE WALLS ARE CORRECTLY SET
 int	valid_map(char **lines, int len)
 {
 	int	(i),(d),(j);
@@ -113,7 +82,7 @@ int	valid_map(char **lines, int len)
 		return (0);
 	return (1);
 }
-
+// TO VALIDATE THE PLAYER AND GET HIS POSITION
 int valid_player(char ** lines, t_map *map){
 	int player, i, j;
 	player = 0;
@@ -141,7 +110,7 @@ int valid_player(char ** lines, t_map *map){
 		return 0;
 	return 1;
 }
-
+// TO VALIDATE THE OBJECTS AND GET THE NUMBER OF COLLECTABLES AND THE EXIT
 int	valid_obj(char **lines, int *C, int *empty)
 {
 	int	(i) ,(j), (exit);
@@ -170,7 +139,7 @@ int	valid_obj(char **lines, int *C, int *empty)
 		return (p(2, "Invalid map: missing fields, exit or collectables\n"),0);
 	return (*C);
 }
-
+// TO OPEN THE FILE AND READ IT
 char	**open_read(char *s)
 {
 	char	*tmp;
@@ -196,7 +165,7 @@ char	**open_read(char *s)
 			NULL);
 	return (lines);
 }
-
+// TO VALIDATE THE FILE EXTENSION
 int	valid(char *s)
 {
 	char	*tmp;
@@ -213,6 +182,143 @@ int	valid(char *s)
 	return (0);
 }
 
+void init(t_vars *vars){
+	int i = 0;
+	int j = 0;
+	t_map *map = vars->map;
+	map->right_corner = mlx_png_file_to_image(vars->mlx, "textures/pac man/pac man tiles/right_corner.png", &i, &j);
+	map->right_down_corner = mlx_png_file_to_image(vars->mlx, "textures/pac man/pac man tiles/right_down_corner.png", &i, &j);
+	map->left_corner = mlx_png_file_to_image(vars->mlx, "textures/pac man/pac man tiles/left_corner.png", &i, &j);
+	printf("i = %p\n", map->left_corner);
+	map->left_down_corner = mlx_png_file_to_image(vars->mlx, "textures/pac man/pac man tiles/left_down_corner.png", &i, &j);
+	map->top_wall = mlx_png_file_to_image(vars->mlx, "textures/pac man/pac man tiles/up_wall.png", &i, &j);
+	map->bottom_wall = mlx_png_file_to_image(vars->mlx, "textures/pac man/pac man tiles/down_wall.png", &i, &j);
+	map->right_wall = mlx_png_file_to_image(vars->mlx, "textures/pac man/pac man tiles/right_wall.png", &i, &j);
+	map->left_wall = mlx_png_file_to_image(vars->mlx, "textures/pac man/pac man tiles/left_wall.png", &i, &j);
+	//map->coin = mlx_png_file_to_image(vars->mlx, "textures/pac man/pac man tiles/coin.png", &i, &j);
+	//map->exit = mlx_png_file_to_image(vars->mlx, "textures/pac man/pac man tiles/exit.png", &i, &j);
+	//map->player = mlx_png_file_to_image(vars->mlx, "textures/pac man/pac man tiles/player.png", &i, &j);
+	//map->enemy = mlx_png_file_to_image(vars->mlx, "textures/pac man/pac man tiles/enemy.png", &i, &j);
+}
+
+int set_walls(t_vars *vars, t_map *map)
+{
+
+	int i = 0;
+	char **lines = map->map;
+	int j = 0;
+	int x = 0;
+	int y = 0;
+	printf(" map  x = %d y = %d\n", map->x, map->y);
+	while (i <= map->y)
+	{
+		while (j <= map->x)
+		{
+			if ((lines[x] && lines[x][y]) &&( lines[x][y] == '1' && i > 0 && j > 0 && i < map->y && j < map->x))
+			{
+				if ((lines[x] && lines[x][y]) &&(lines[x][y] == '1' && lines[x][y + 1] == '1' && lines[x + 1][y] == '1' && lines[x + 1][y + 1] == '1'))
+				{
+					printf("1 i = %d j = %d\n", i, j);
+					mlx_put_image_to_window(vars->mlx ,vars->win, map->right_corner ,j,i);
+				}
+				else if ((lines[x] && lines[x][y]) &&(lines[x][y] == '1' && lines[x][y - 1] == '1' && lines[x + 1][y] == '1' && lines[x + 1][y - 1] == '1'))
+				{
+					printf("2 i = %d j = %d\n", i, j);
+					mlx_put_image_to_window(vars->mlx ,vars->win, map->left_corner ,j,i);
+				}
+				else if (lines[x][y] &&( lines[x][y] == '1' && lines[x][y + 1] == '1' && lines[x - 1][y] == '1' && lines[x - 1][y + 1] == '1'))
+				{
+					printf("3 i = %d j = %d\n", i, j);
+					mlx_put_image_to_window(vars->mlx ,vars->win, map->right_down_corner ,j,i);
+				}
+				else if ((lines[x] && lines[x][y]) && (lines[x][y] == '1' && lines[x][y - 1] == '1' && lines[x - 1][y] == '1' && lines[x - 1][y - 1] == '1'))
+				{
+					printf("4 i = %d j = %d\n", i, j);
+					mlx_put_image_to_window(vars->mlx ,vars->win, map->left_down_corner ,j,i);
+				}
+				else if ((lines[x] && lines[x][y]) &&(lines[x][y] == '1' && lines[x][y + 1] == '1' && lines[x][y - 1] == '1'))
+				{
+					printf("5 i = %d j = %d\n", i, j);
+					mlx_put_image_to_window(vars->mlx ,vars->win, map->top_wall ,j,i);
+				}
+				else if ((lines[x] && lines[x][y]) && (lines[x][y] == '1' && lines[x][y + 1] == '1' && lines[x][y - 1] == '1'))
+				{
+					printf("6 i = %d j = %d\n", i, j);
+					mlx_put_image_to_window(vars->mlx ,vars->win, map->bottom_wall ,j,i);
+				}
+				else if ((lines[x] && lines[x][y]) &&( lines[x][y] == '1' && lines[x + 1][y] == '1' && lines[x - 1][y] == '1'))
+				{
+					printf("7 i = %d j = %d\n", i, j);
+					mlx_put_image_to_window(vars->mlx ,vars->win, map->right_wall ,j,i);
+				}
+				else if ((lines[x] && lines[x][y]) &&( lines[x][y] == '1' && lines[x + 1][y] == '1' && lines[x - 1][y] == '1'))
+				{
+					printf("8 i = %d j = %d\n", i, j);
+					mlx_put_image_to_window(vars->mlx ,vars->win, map->left_wall ,j,i);
+				}
+				y++;
+			}
+			if (i == 0 && j == 0)
+			{
+				mlx_put_image_to_window(vars->mlx ,vars->win, map->left_corner ,0,0);
+			}
+			else if (i == 0 && j == map->x)
+			{
+				mlx_put_image_to_window(vars->mlx ,vars->win, map->right_corner ,j,0);
+			}
+			else if (i == map->y && j == 0)
+			{	
+				mlx_put_image_to_window(vars->mlx ,vars->win, map->left_down_corner ,0,i);
+			}
+			else if (i == map->y && j == map->x)
+			{	
+				mlx_put_image_to_window(vars->mlx ,vars->win, map->right_down_corner ,j,i);
+			}
+			else if (i == 0 &&( j > 0 && j < map->x))
+			{	
+				mlx_put_image_to_window(vars->mlx ,vars->win, map->top_wall ,j,i);
+			}
+			else if (i == map->y && (j > 0 && j < map->x))
+			{	
+
+				mlx_put_image_to_window(vars->mlx ,vars->win, map->bottom_wall ,j,i);
+			}
+			else if (j == 0 && (i > 0 && i < map->y))
+			{	
+
+				mlx_put_image_to_window(vars->mlx ,vars->win, map->left_wall ,j,i);
+			}
+			else if (j == map->x && (i > 0 && i < map->y))
+			{	
+				mlx_put_image_to_window(vars->mlx ,vars->win, map->right_wall ,j,i);
+			}
+
+			j+=32;
+			printf(" --> y = %d\n",  j);
+		}
+		printf(" --> x = %d\n", x);
+		i+= 32;
+		x++;
+		y = 0;
+		j = 0;
+	}
+	return 1;	
+}
+
+void start_the_game(t_vars *vars)
+{
+	t_data	*img  = vars->img;
+	t_map *map = vars->map;
+	int i ;
+	int j;
+	mlx_clear_window(vars->mlx, vars->win);
+	init(vars);
+	set_walls(vars, map);
+
+	//mlx_put_image_to_window(vars->mlx, vars->win, , 0,0);
+	
+}
+// TO VALIDATE THE MAP << IT JUST A WORKAROUND TO COMPINED THEM ALL FOR THE NORMINETTE >>
 int	validate(t_map *map, int ac, char *av[])
 {
 	int c = 0;
@@ -234,47 +340,60 @@ int	validate(t_map *map, int ac, char *av[])
 	i = flood_fill(map->map,map, map->x_player,map->y_player);
 	if (c + 2 != map->c + 2)
 		return (p(2,"Invalid map: the player must have a way out to all the coins and the exit.\n"), 0);
-	map->y = ft_arrlen(map->map) * 64;
-	map->x = ft_strlen(map->map[0]) * 64;
+	map->y = ft_arrlen(map->map) * 32;
+	map->x = ft_strlen(map->map[0]) * 32;
 	return (1);
 }
-
+#include <string.h>
 int	main(int ac, char *av[])
 {
-	t_vars	vars;
-	t_data	img ;
-	t_map map = {0,0,0,0,0,0, NULL};
+	t_vars	*vars = malloc(sizeof(t_vars));
+	t_data	*img = malloc(sizeof(t_data));
+	t_map *map = malloc(sizeof(t_map));
+	
+
+	memset(map, 0, sizeof(t_map));
+
+	vars->map = map;
 	int		offset;
 	int		i;
 	int		j;
-	int		ii = 0;
-	int		ij = 0;
+	int		ii ;
+	int		ij ;
+	int		btn_x;
+	int		btn_y;
 
-	if (!validate(&map , ac, av))
+	if (!validate(map , ac, av))
 		return (0);
 	
+	vars->mlx = mlx_init();
+	vars->win = mlx_new_window(vars->mlx, map->x +32 , map->y +32, "toby!");
+	img->img = mlx_new_image(vars->mlx, map->x, map->y);
 
-	
-	vars.mlx = mlx_init();
-	vars.win = mlx_new_window(vars.mlx, map.x, map.y, "toby!");
-	img.img = mlx_new_image(vars.mlx, map.x, map.y);
+	// mlx_put_image_to_window(vars->mlx, vars->win, img->img, 64, 64);
+	void *image = mlx_xpm_file_to_image(vars->mlx, "textures/wall.xpm",  &i, &j);
+	// img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, &img->line_length,
+	// 		&img->endian);
+	offset = (map->y * img->line_length + map->x * (img->bits_per_pixel / 8));
 
-	// mlx_put_image_to_window(vars.mlx, vars.win, img.img, 64, 64); 
-	void *image = mlx_xpm_file_to_image(vars.mlx, "textures/wall.xpm",  &map.x, &map.y);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
-			&img.endian);
-	offset = (map.y * img.line_length + map.x * (img.bits_per_pixel / 8));
-	my_mlx_pixel_put(&img, 5, 5, 0x0000FF00);
-	mlx_put_image_to_window(vars.mlx, vars.win, image, map.x , map.y);
-	//void *pac = mlx_png_file_to_image(vars.mlx, "textures/pac man/pac man & life counter & death/pac man/pac_man_0.png", &ii , &ij);
-	//mlx_put_image_to_window(vars.mlx, vars.win, pac, 400, 400);
-	//mlx_string_put(vars.mlx, vars.win, 100, 100, 0x00FFFFFF, "Hello World!");
+	printf("offset = %d\n", offset);
+	//my_mlx_pixel_put(image, 5, 5, 0x0000FF00);
+	//mlx_xpm_file_to_image(vars->mlx, "textures/play.xpm", &x, &y);
+	//mlx_put_image_to_window(vars->mlx, vars->win, image, map->x , map->y);
+	void *pac = mlx_png_file_to_image(vars->mlx, "pacman.png", &ii , &ij);
+	void *lets_play_btn = mlx_png_file_to_image(vars->mlx, "lets_play_btn.png", &btn_x , &btn_y);
+	printf("x = %d y = %d\n", btn_x, btn_y);
+	mlx_put_image_to_window(vars->mlx, vars->win, img->img, map->x,map->y );
+	mlx_put_image_to_window(vars->mlx, vars->win, pac, (map->x/2) - (ii/2), (map->y/2) - (ij/2));
+	mlx_put_image_to_window(vars->mlx, vars->win, lets_play_btn, (map->x/2) - btn_x/2 , (map->y - map->y/4) - btn_y/2);
+
+	//mlx_string_put(vars->mlx, vars->win, 100, 100, 0x00FFFFFF, "Hello World!");
 	//print_play(&vars);
 	// while (j < 800)
-	//     mlx_pixel_put(vars.mlx, vars.win, j++ , i , 0x00FF0000);
-
-	mlx_key_hook(vars.win, keycode, &vars);  
-	mlx_hook(vars.win, 17, 0, _close, &vars);
-	mlx_loop(vars.mlx);
+	//     mlx_pixel_put(vars->mlx, vars->win, j++ , i , 0x00FF0000);
+	
+	mlx_key_hook(vars->win, keycode, vars);
+	mlx_hook(vars->win, 17, 0, _close, vars);
+	mlx_loop(vars->mlx);
 	return (0);
 }

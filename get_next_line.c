@@ -6,7 +6,7 @@
 /*   By: zdidah <zdidah@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 09:28:29 by zdidah            #+#    #+#             */
-/*   Updated: 2024/12/12 18:15:42 by zdidah           ###   ########.fr       */
+/*   Updated: 2025/02/07 14:31:01 by zdidah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,29 +36,23 @@ char	*find_left(char *res)
 char	*check_line(int fd, char *left)
 {
 	ssize_t	read_count;
-	char	*tmp;
 	char	*buffer;
 
-	buffer = malloc(((size_t)(BUFFER_SIZE + 1)) * sizeof(char));
-	if (!buffer)
-		return (NULL);
+	buffer = ft_calloc(((size_t)(BUFFER_SIZE + 1)), sizeof(char));
 	read_count = 1;
 	while (read_count > 0)
 	{
 		read_count = read(fd, buffer, BUFFER_SIZE);
 		if (read_count == -1)
-			return (free(buffer), free(left), left = NULL, NULL);
+			return (left = NULL, NULL);
 		buffer[read_count] = '\0';
 		if (read_count == 0)
 			break ;
-		tmp = left;
-		left = ft_strjoin_(tmp, buffer);
-		free(tmp);
-		tmp = NULL;
+		left = ft_strjoin_(left, buffer);
 		if (ft_strchr_(left, '\n'))
 			break ;
 	}
-	return (free(buffer), buffer = NULL, left);
+	return (ft_remove(buffer), buffer = NULL, left);
 }
 
 char	*get_next_line(int fd)
@@ -75,7 +69,6 @@ char	*get_next_line(int fd)
 	left = find_left(res);
 	if (res[0] == '\0')
 	{
-		free(res);
 		res = NULL;
 	}
 	return (res);

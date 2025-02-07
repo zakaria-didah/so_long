@@ -1,26 +1,33 @@
-SRC=get_next_line.c get_next_line_utils.c main.c utiles.c 
-
-NAME=so_long
+SRC=get_next_line.c get_next_line_utils.c main_.c utiles.c ft_printf.c validate.c
 
 OBJ=$(SRC:%.c=%.o)
 
+NAME=so_long
+
 CC=gcc
 
-CFLAGS=-Imlx -framework OpenGL -framework AppKit 
+libs=libft/libft.a
 
-all: $(NAME)
+CFLAGS= -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz  #-fsanitize=address -g3
 
-$(NAME): $(OBJ)
-	$(CC) $(OBJ) -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz libftprintf.a minilibx-linux/libmlx_Linux.a -o $(NAME)
+all: make_libs $(NAME)
+
+make_libs:
+	$(MAKE) -C libft
+
+$(NAME):  $(OBJ)
+	$(CC) $(OBJ) $(libs) $(CFLAGS) -o $(NAME)
 
 %.o: %.c
-	$(CC) -Imlx_linux -O3 -c $< -o $@
+	$(CC) -std=gnu17 -ggdb3 -Imlx_linux -O3 -c $< -o $@
 
 clean:
 	rm -f $(OBJ)
+	$(MAKE) -C libft clean
 
 fclean: clean
 	rm -f $(NAME)
+	$(MAKE) -C libft fclean
 
 re: fclean all
 
