@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zdidah <zdidah@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zdidah <zdidah@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 20:40:04 by zdidah            #+#    #+#             */
-/*   Updated: 2025/02/07 11:10:50 by zdidah           ###   ########.fr       */
+/*   Updated: 2025/02/15 11:00:00 by zdidah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,19 +162,17 @@ int	valid_ext(char *s)
 		}
 	}
 	ft_printf_fd(2, "Invalid file extension or file\n");
-	return (0);
+	exit(1);
 }
 
-int	validate(t_map *map, int ac, char *av[])
+int	validate(t_map *map,  int ac, char *av[])
 {
-	int(c), (empty), (i);
-	c = 0;
-	empty = 0;
-	i = 0;
+	int (c) = 0, (empty) = 0, (i) = 0;
+	char **tmp ;
+	
 	if (ac != 2)
 		return (ft_printf_fd(2, "Invalid number of arguments\n"), 0);
-	if (!valid_ext(av[1]))
-		return (0);
+	valid_ext(av[1]);
 	map->map = open_read(av[1]);
 	if (!map->map)
 		return (0);
@@ -183,12 +181,15 @@ int	validate(t_map *map, int ac, char *av[])
 				"Invalid map: try to set the objects correctly\n"), 0);
 	if (!valid_player(map->map, map))
 		return (0);
-	i = flood_fill(map->map, map, map->x_player, map->y_player);
+	tmp = ft_arrdup(map->map);
+	i = flood_fill(tmp, map, map->x_player, map->y_player);
 	if (c + 2 != map->c + 2)
 		return (ft_printf_fd(2,
 			"Invalid map: Player must have a way out to the coins and the exit.\n"),
 			0);
 	map->y = ft_arrlen(map->map) * 32;
-	map->x = ft_strlen(map->map[0]) * 32;
+	map->x = (ft_strlen(map->map[0]) -1 )* 32;
+	if (map->x > 1920 || map->y > 1008)
+		return (p(2, "Invalid map: the map is too big\n"), 0);
 	return (1);
 }

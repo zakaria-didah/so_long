@@ -1,4 +1,4 @@
-SRC=get_next_line.c get_next_line_utils.c main_.c utiles.c ft_printf.c validate.c
+SRC=get_next_line.c get_next_line_utils.c main_.c utiles.c ft_printf.c validate.c utiles.c utiles1.c
 
 OBJ=$(SRC:%.c=%.o)
 

@@ -340,8 +340,10 @@ int	validate(t_map *map, int ac, char *av[])
 	i = flood_fill(map->map,map, map->x_player,map->y_player);
 	if (c + 2 != map->c + 2)
 		return (p(2,"Invalid map: the player must have a way out to all the coins and the exit.\n"), 0);
-	map->y = ft_arrlen(map->map) * 32;
-	map->x = ft_strlen(map->map[0]) * 32;
+	map->y = ft_arrlen(map->map) * 16;
+	map->x = ft_strlen(map->map[0]) * 16;
+	if (map->x > 1920 || map->y > 1080)
+		return (p(2, "Invalid map: the map is too big\n"), 0);
 	return (1);
 }
 #include <string.h>
